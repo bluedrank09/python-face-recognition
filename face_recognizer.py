@@ -1,10 +1,29 @@
 import face_recognition as fr
 import os
+import cv2
 
 def classify_face(file_name):
     try: 
+        '''
+        Load the library images into a dictionary.
+        Splitting the dictionary into two lists: values and keys.
+        faces_values holds the encryption.
+        faces_keys holds the name of the file.
+        '''
         faces = get_encoded_faces()
-        print(f"{faces}")
+        faces_values = list(faces.values())
+        faces_names = list(faces.keys())
+
+        #Reading the file that the user gave. It will be compared to the library file to see who the image is.
+        input_faces = cv2.imread(file_name, cv2.IMREAD_COLOR)
+
+        #Finding the face on th image ao it knows where to put the box.
+        face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
+
+        #Encoding all the faces in the image that the user gave.
+        unknown_face_encodings = fr.face_encodings(input_faces, face_locations, num_jitters = 50, model = 'small')
+
+        print(f"{unknown_face_encodings}")
         return True
 
     except Exception as error:
