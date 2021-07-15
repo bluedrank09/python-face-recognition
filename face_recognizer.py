@@ -48,14 +48,19 @@ def classify_face(file_name):
         face_names.append(name)
         log.info(f"{inspect.stack()[0][3]} : Face names list = {face_names}")
 
-        for(top, right, bottom, left), name in zip(face_locations, face_names):
-            #Drawing the box around the face.
-            cv2.rectangle(input_faces, (left-20, top-20), (right+20, bottom+20), (106, 13, 137), 2)
+        if name != 'Unknown':
 
-            #Drawing the label for the face in the box
-            cv2.rectangle(input_faces, (left-20, bottom-15), (right+20, bottom+20), (123, 104, 238), cv2.FILLED)
-            font = cv2.FONT_HERSHEY_COMPLEX
-            cv2.putText(input_faces, name, (left-20, bottom+15), font, 1.0, (50,205,50), 1)
+            for(top, right, bottom, left), name in zip(face_locations, face_names):
+                #Drawing the box around the face.
+                cv2.rectangle(input_faces, (left-20, top-20), (right+20, bottom+20), (106, 13, 137), 2)
+
+                #Drawing the label for the face in the box
+                cv2.rectangle(input_faces, (left-20, bottom-15), (right+20, bottom+20), (123, 104, 238), cv2.FILLED)
+                font = cv2.FONT_HERSHEY_COMPLEX
+                cv2.putText(input_faces, name, (left-20, bottom+15), font, 1.0, (50,205,50), 1)
+
+        else:
+            print(f"Face not found :(")
 
         while True:
             cv2.imshow('Video', input_faces)
