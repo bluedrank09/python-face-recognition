@@ -8,52 +8,61 @@ import inspect
 
 def classify_face(file_name):
     try: 
-        log.info(f"In {inspect.stack()[0][3]}")
+        log.debug(f"In {inspect.stack()[0][3]}")
         '''
         Load the library images into a dictionary.
         Splitting the dictionary into two lists: values and keys.
         faces_values holds the encryption.
         faces_keys holds the name of the file.
         '''
+        log.info(f"Starting to encode faces in the file given.")
         faces = get_encoded_faces()
         faces_values = list(faces.values())
         faces_names = list(faces.keys())
-        log.info(f"{inspect.stack()[0][3]} : {len(faces_names)} names in library are {faces_names}")
+        log.info(f"There are {len(faces_names)} names in the faces library.")
         
         #Reading the file that the user gave. It will be compared to the library file to see who the image is.
+        log.info(f"Reading the file you have given.")
         input_faces = cv2.imread(file_name, cv2.IMREAD_COLOR)
 
         #Finding the face on the image so it knows where to put the box.
         #face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
+        log.info(f"Finding all the faces in the file given.")
         face_locations = fr.face_locations(input_faces)
         log.debug(f"Face locations are : {face_locations}")
+        log.info(f"Found {len(face_locations)} faces in the file given.")
 
         #Encoding all the faces in the image that the user gave.
+        log.info(f"Encoding the unknown faces in the file.")
         unknown_face_encodings = fr.face_encodings(input_faces, face_locations, model = 'small')
         log.debug(f"Unknown faces are : {unknown_face_encodings}")
 
-        log.debug(f"Starting face comparisons")
+        log.info(f"Starting face comparisons")
+
 
         face_names = []
 
-        for face_encoding in unknown_face_encodings:
+        for list_index, face_encoding in enumerate(unknown_face_encodings):
             # See which picture in the library is the best match with the encoded face(s).
+            log.info(f"Getting all the good matches for each face from the given picture with the faces in the faces library.")
             matches = fr.compare_faces(faces_values, face_encoding)
             name = "Unknown" 
-            log.debug("Finished face comparisons")
-            log.info(f"Matches : {matches}")
+            log.info(f"Comparing face {list_index + 1}")
+            log.info(f"Got all the good matches found for the faces in the file given ")
             face_distances = fr.face_distance(faces_values, face_encoding)
             best_match_index = np.argmin(face_distances)
             log.debug(f"Best match index : {best_match_index}, Face names : {faces_names}")
 
             if matches[best_match_index]:
                 name = faces_names[best_match_index]
-                log.info(f"{inspect.stack()[0][3]} : Name = {name}")
+            log.info(f"Got {name} as the best match out of all the good matches for the faces in the given file.")
 
             face_names.append(name)
-            log.info(f"{inspect.stack()[0][3]} : Face names list = {face_names}")
+            log.debug(f"{inspect.stack()[0][3]} : Face names list = {face_names}")
+            log.info(f"Got the name of the best match. This is the name that will show up on screen.")
 
             if name != 'Unknown':
+                log.info(f"Drawing a box and label around the faces in the file given.")
 
                 for(top, right, bottom, left), name in zip(face_locations, face_names):
                     #Drawing the box around the face.
@@ -87,6 +96,9 @@ def get_encoded_faces():
                 log.debug(f"{inspect.stack()[0][3]} : {file} : Face = {fr.face_encodings(face)}")
                 encoding = fr.face_encodings(face)[0]
                 encoded[file.split(".")[0]] = encoding 
+
+        log.info(f"Finished encoding all the faces in the faces library")
+        
         return(encoded)
 
     except Exception as error:
@@ -96,12 +108,12 @@ def get_encoded_faces():
 
 if __name__ == "__main__":
     try:
-        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.DEBUG)
-        log.info(f"{inspect.stack()[0][3]} Starting face rec program")
+        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.INFO)
+        log.info(f"Starting face rec program")
         
         file_name = input("Give me the file name : ")
         log.debug(f"{inspect.stack()[0][3]} Input file name is {file_name}")
-        print(classify_face(file_name))
+        classify_face(file_name)
 
     except Exception as error:
         exc_type, exc_obj, exc_tb = sys.exc_info()
