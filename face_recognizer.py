@@ -57,7 +57,12 @@ def classify_face(file_name):
                 name = faces_names[best_match_index]
             log.info(f"Got {name} as the best match out of all the good matches for the faces in the given file.")
 
-            face_names.append(name)
+            original_name = len(name)
+            new_name = name[:original_name-2]
+            log.debug(f"{inspect.stack()[0][3]} : Changed name")
+            log.info(f"Changed the name so that any additional characters are removed.")
+
+            face_names.append(new_name)
             log.debug(f"{inspect.stack()[0][3]} : Face names list = {face_names}")
             log.info(f"Got the name of the best match. This is the name that will show up on screen.")
 
@@ -76,6 +81,8 @@ def classify_face(file_name):
             else:
                 print(f"Face not found :(")
 
+        print(high_school_faces())
+
         while True:
             cv2.imshow('Video', input_faces)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -85,6 +92,7 @@ def classify_face(file_name):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         raise error
+
 
 def get_encoded_faces():
     try:
@@ -105,6 +113,24 @@ def get_encoded_faces():
         exc_type, exc_obj, exc_tb = sys.exc_info()
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         raise error
+
+
+def high_school_faces():
+    try:
+
+        high_school_names = []
+
+        for dirpath, dirname, filename in os.walk("./high school faces"):
+            for file in filename :
+                high_school_names.append(file.split('.')[0])
+        
+        return(high_school_names)
+
+    except Exception as error:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
+        raise error
+
 
 if __name__ == "__main__":
     try:
