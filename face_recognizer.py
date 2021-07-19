@@ -23,7 +23,8 @@ def classify_face(file_name):
         
         #Reading the file that the user gave. It will be compared to the library file to see who the image is.
         log.info(f"Reading the file you have given.")
-        input_faces = cv2.imread(file_name, cv2.IMREAD_COLOR)
+        input_faces = cv2.imread(file_name)
+        
 
         #Finding the face on the image so it knows where to put the box.
         #face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
@@ -81,10 +82,18 @@ def classify_face(file_name):
             else:
                 print(f"Face not found :(")
 
-        print(high_school_faces())
+        log.debug(f"High school faces : {get_high_school_faces(face_names, input_faces)}")
 
+        img1 = cv2.imread('C:\\Users\\mayab\\OneDrive\\Desktop\\ict\\python\\python face recognition\\python-face-recognition\\high school faces\\melissa fumero.jpg')
+        img2 = cv2.imread('C:\\Users\\mayab\\OneDrive\\Desktop\\ict\\python\\python face recognition\\python-face-recognition\\high school faces\\andy samberg.jpg')
+        concatenated_images = np.concatenate((img2, img1), axis = 1)
+    
         while True:
-            cv2.imshow('Video', input_faces)
+            # concatenated_images = np.concatenate(get_high_school_faces(face_names, input_faces), axis = 1)
+
+            cv2.imshow('Noice', concatenated_images)
+            # cv2.imshow('Noice', input_faces)    
+        
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 return(face_names)
 
@@ -115,16 +124,21 @@ def get_encoded_faces():
         raise error
 
 
-def high_school_faces():
+def get_high_school_faces(face_names, input_faces):
     try:
 
-        high_school_names = []
+        high_school_names = [input_faces]
 
         for dirpath, dirname, filename in os.walk("./high school faces"):
             for file in filename :
-                high_school_names.append(file.split('.')[0])
+                if file.split('.')[0] in face_names:
+                   high_school_image = cv2.imread(file, cv2.IMREAD_COLOR)
+                   high_school_names.append(high_school_image)
+
         
-        return(high_school_names)
+
+        return tuple(high_school_names)
+                    
 
     except Exception as error:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -134,7 +148,7 @@ def high_school_faces():
 
 if __name__ == "__main__":
     try:
-        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.INFO)
+        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.DEBUG)
         log.info(f"Starting face rec program")
         
         file_name = input("Give me the file name : ")
