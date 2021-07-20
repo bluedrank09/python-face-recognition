@@ -27,9 +27,8 @@ def classify_face(file_name):
         
 
         #Finding the face on the image so it knows where to put the box.
-        #face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
         log.info(f"Finding all the faces in the file given.")
-        face_locations = fr.face_locations(input_faces)
+        face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
         log.debug(f"Face locations are : {face_locations}")
         log.info(f"Found {len(face_locations)} faces in the file given.")
 
@@ -84,17 +83,11 @@ def classify_face(file_name):
 
         log.debug(f"High school faces : {get_high_school_faces(face_names, input_faces)}")
 
-        img1 = cv2.imread('C:\\Users\\mayab\\OneDrive\\Desktop\\ict\\python\\python face recognition\\python-face-recognition\\high school faces\\melissa fumero.jpg')
-        img2 = cv2.imread('C:\\Users\\mayab\\OneDrive\\Desktop\\ict\\python\\python face recognition\\python-face-recognition\\high school faces\\andy samberg.jpg')
-        concatenated_images = np.concatenate((img2, img1), axis = 1)
-    
+        for face_index, face in enumerate(get_high_school_faces(face_names, input_faces)):
+            cv2.imshow(f"Face {face_index+1}", face)
+  
         while True:
-            # concatenated_images = np.concatenate(get_high_school_faces(face_names, input_faces), axis = 1)
-
-            cv2.imshow('Noice', concatenated_images)
-            # cv2.imshow('Noice', input_faces)    
-        
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(0):
                 return(face_names)
 
     except Exception as error:
@@ -130,14 +123,15 @@ def get_high_school_faces(face_names, input_faces):
         high_school_names = [input_faces]
 
         for dirpath, dirname, filename in os.walk("./high school faces"):
-            for file in filename :
+            for file in filename:
+                log.debug(f"File : {file}, dirpath : {dirpath}, dirname : {dirname}")
+
                 if file.split('.')[0] in face_names:
-                   high_school_image = cv2.imread(file, cv2.IMREAD_COLOR)
-                   high_school_names.append(high_school_image)
+                    high_school_image = cv2.imread(os.path.join(dirpath, file), cv2.IMREAD_COLOR)
 
-        
+                    high_school_names.append(high_school_image)
 
-        return tuple(high_school_names)
+        return high_school_names
                     
 
     except Exception as error:
