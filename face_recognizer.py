@@ -25,7 +25,6 @@ def classify_face(file_name):
         log.info(f"Reading the file you have given.")
         input_faces = cv2.imread(file_name)
         
-
         #Finding the face on the image so it knows where to put the box.
         log.info(f"Finding all the faces in the file given.")
         face_locations = fr.face_locations(input_faces, number_of_times_to_upsample = 3, model='hog' )
@@ -38,7 +37,6 @@ def classify_face(file_name):
         log.debug(f"Unknown faces are : {unknown_face_encodings}")
 
         log.info(f"Starting face comparisons")
-
 
         face_names = []
 
@@ -55,13 +53,17 @@ def classify_face(file_name):
 
             if matches[best_match_index]:
                 name = faces_names[best_match_index]
+
             log.info(f"Got {name} as the best match out of all the good matches for the faces in the given file.")
 
+            #Removing any additional characters.
+            #The files are called the name of the person and a number at the end. This emoves the number and the space.
             original_name = len(name)
             new_name = name[:original_name-2]
             log.debug(f"{inspect.stack()[0][3]} : Changed name")
             log.info(f"Changed the name so that any additional characters are removed.")
 
+            #Getting the best match for the image given from the faces library. This name will show up on screen.
             face_names.append(new_name)
             log.debug(f"{inspect.stack()[0][3]} : Face names list = {face_names}")
             log.info(f"Got the name of the best match. This is the name that will show up on screen.")
@@ -83,8 +85,15 @@ def classify_face(file_name):
 
         log.debug(f"High school faces : {get_high_school_faces(face_names, input_faces)}")
 
-        for face_index, face in enumerate(get_high_school_faces(face_names, input_faces)):
-            cv2.imshow(f"Face {face_index+1}", face)
+        #Creating the window name for the images
+        log.info(f"Creating the window names for each window that will load.")
+        # for face_index, face in enumerate(get_high_school_faces(face_names, input_faces)):
+        #     cv2.imshow(f"Face {face_index +1}", face)
+
+        for high_school_name, image_displaying in get_high_school_faces(face_names, input_faces).items():
+            cv2.imshow(high_school_name.split('.')[0], image_displaying)
+
+        log.info(f"Showing the windows now. They should appear in your task bar.")
   
         while True:
             if cv2.waitKey(0):
@@ -95,16 +104,19 @@ def classify_face(file_name):
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         raise error
 
-
 def get_encoded_faces():
     try:
         encoded = {}
 
+        log.info(f"Starting to encode the high school photos.")
+
+        #Encoding all the high school faces
         for dirpath, dirname, filename in os.walk("./faces"):
             for file in filename : 
                 face = fr.load_image_file("faces/" + file)
                 log.debug(f"{inspect.stack()[0][3]} : {file} : Face = {fr.face_encodings(face)}")
                 encoding = fr.face_encodings(face)[0]
+                #Getting rid of the file extention : .jpg, .png, etc
                 encoded[file.split(".")[0]] = encoding 
 
         log.info(f"Finished encoding all the faces in the faces library")
@@ -116,33 +128,39 @@ def get_encoded_faces():
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         raise error
 
-
 def get_high_school_faces(face_names, input_faces):
     try:
+        log.info(f"Getting high school faces")
 
-        high_school_names = [input_faces]
+        #Getting all the original faces names to compare with the names of the high school photos. Adding it to a list.
+        high_school_names = {'Your file' : input_faces}
 
         for dirpath, dirname, filename in os.walk("./high school faces"):
             for file in filename:
                 log.debug(f"File : {file}, dirpath : {dirpath}, dirname : {dirname}")
 
+                #Checking to see if the high school picture file name (without extention) is also in the original faces file. 
+                #If it is, it will be appended to the high school names list.
+                log.info(f"Checking that the high school file name adds up with the names of the original faces files.")
+
                 if file.split('.')[0] in face_names:
                     high_school_image = cv2.imread(os.path.join(dirpath, file), cv2.IMREAD_COLOR)
-
-                    high_school_names.append(high_school_image)
+                    high_school_names.update({file : high_school_image})
+                    #high_school_names.append(high_school_image)
+        
+        log.info(f"Finished getting all the names of the high school faces file")
 
         return high_school_names
                     
-
     except Exception as error:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         raise error
 
-
 if __name__ == "__main__":
     try:
-        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.DEBUG)
+        #Setting log configuration
+        log.basicConfig(format = '%(asctime)s : %(lineno)d : %(message)s', level = log.INFO)
         log.info(f"Starting face rec program")
         
         file_name = input("Give me the file name : ")
@@ -153,6 +171,5 @@ if __name__ == "__main__":
         exc_type, exc_obj, exc_tb = sys.exc_info()
         log.info(f"{inspect.stack()[0][3]} : {exc_tb.tb_lineno} : {error}")
         
-
     finally:
-        print(":)")
+        print(f":)")
