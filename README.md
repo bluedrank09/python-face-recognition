@@ -1,5 +1,17 @@
 # python-face-recognition
-This is a Python program that can recognise the faces of the Brooklyn 99 cast in pictures. It will draw a box around their faces, label it, and then also display their high school photots in new windows. If the program doesn't recognize a face, it will make them as "Unknown"
+This is a Python program that can recognise the faces of the Brooklyn 99 cast in pictures. It will draw a box around their faces, label it, and then also display their high school photots in new windows. If the program doesn't recognize a face, it will make them as "Unknown".
+
+# People It Can Recognize
+The program can recognize : 
+1. Andy Samberg.
+2. Melissa Fumero.
+3. Joe Lo Truglio.
+4. Stephanie Beatriz.
+5. Andre Braugher.
+6. Terry Crews.
+7. Joel McKinnon Miller.
+8. Dirk Blocker.
+9. Chelsea Peretti.
 
 # How To Install
 1. Create a folder on your computer to store the files.
