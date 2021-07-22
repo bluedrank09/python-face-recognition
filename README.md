@@ -20,7 +20,7 @@ The program can recognize :
 4. Create a virtual envirnment : python -m venv venv
 5. cd venv/Scripts
 6. activate
-7. cd ..\..
+7. cd ..\\..
 8. pip install -r requirements.txt
 
 # How To Run 
