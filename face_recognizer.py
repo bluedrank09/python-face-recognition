@@ -57,7 +57,7 @@ def classify_face(file_name):
             log.info(f"Got {name} as the best match out of all the good matches for the faces in the given file.")
 
             #Removing any additional characters.
-            #The files are called the name of the person and a number at the end. This emoves the number and the space.
+            #The files are called the name of the person and a number at the end. This removes the number and the space.
             original_name = len(name)
             new_name = name[:original_name-2]
             log.debug(f"{inspect.stack()[0][3]} : Changed name")
@@ -87,9 +87,7 @@ def classify_face(file_name):
 
         #Creating the window name for the images
         log.info(f"Creating the window names for each window that will load.")
-        # for face_index, face in enumerate(get_high_school_faces(face_names, input_faces)):
-        #     cv2.imshow(f"Face {face_index +1}", face)
-
+        
         for high_school_name, image_displaying in get_high_school_faces(face_names, input_faces).items():
             cv2.imshow(high_school_name.split('.')[0], image_displaying)
 
@@ -146,7 +144,6 @@ def get_high_school_faces(face_names, input_faces):
                 if file.split('.')[0] in face_names:
                     high_school_image = cv2.imread(os.path.join(dirpath, file), cv2.IMREAD_COLOR)
                     high_school_names.update({file : high_school_image})
-                    #high_school_names.append(high_school_image)
         
         log.info(f"Finished getting all the names of the high school faces file")
 
