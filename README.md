@@ -11,7 +11,7 @@ This is a Python program that can recognise the faces of the Brooklyn 99 cast in
 7. cd ..\..
 8. pip install -r requirements.txt
 
-# How Ro Run 
+# How To Run 
 1. Get a picture of the cast either off the internet, or from the exmaples folder. The extention doesn't matter.
 2. Save in python-face-recognition
 3. Run the program, and give it the file name with the extention when prompted.
